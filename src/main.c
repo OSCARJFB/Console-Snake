@@ -3,7 +3,7 @@
         https://github.com/OSCARJFB
 
         MIT License
-        Copyright (c) 2023 Oscar Bergström
+        Copyright (c) 2024 Oscar Bergström
 */
 
 #include "game.h"

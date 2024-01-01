@@ -3,7 +3,7 @@
 		https://github.com/OSCARJFB
 
 		MIT License
-		Copyright (c) 2023 Oscar Bergström
+		Copyright (c) 2024 Oscar Bergström
 */
 
 #include "Game.h"
@@ -48,16 +48,63 @@ static bool frames(void)
 	return frames < 60;
 }
 
+static Snake* allocateSnakePart(void)
+{
+	Snake* part = malloc(sizeof(Snake));
+	if (part == NULL)
+	{
+		perror("malloc");
+		exit(EXIT_FAILURE);
+	}
+
+	return part;
+}
+
+static void addPartToSnake(Snake** snake)
+{
+	Snake* part = allocateSnakePart();
+	
+	if (*snake == NULL)
+	{
+		*snake = part;
+		return; 
+	}
+
+	for (Snake* tail = *snake; tail != NULL; tail = tail->next)
+	{
+		if (tail->next == NULL)
+		{
+			tail->next = part;
+		}
+	}
+}
+
+static void printSnake(Snake** snake)
+{
+	
+}
+
 void run(void)
 {
 	const int ESC = 27;
-	initTerm();
+	Snake* snake = NULL;
+
+	initConsole();
+	addPartToSnake(&snake);
 
 	for(int ch = 0; ch = ESC; ch = getchar())
 	{
+		// FRAME LOCK
 		if (!frames())
 		{
 			continue;
 		}
+
+		// READ INPUT
+
+		// CHECK INPUT
+
+		// DRAW
+
 	}
 }

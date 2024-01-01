@@ -15,6 +15,12 @@
 
 #include "Console.h"
 
+typedef struct Snake
+{
+    int x, y;
+    struct Snake* next;
+} Snake; 
+
 void run(void);
 
 #endif

@@ -3,7 +3,7 @@
 		https://github.com/OSCARJFB
 
 		MIT License
-		Copyright (c) 2023 Oscar Bergström
+		Copyright (c) 2024 Oscar Bergström
 */
 
 #include "Console.h"
@@ -19,7 +19,7 @@ void restoreConsole(void)
 	printf("Terminal was restored successfully");
 }
 
-void initTerm(void)
+void initConsole(void)
 {
 	if ((hInput = GetStdHandle(STD_INPUT_HANDLE)) == INVALID_HANDLE_VALUE)
 	{

@@ -3,7 +3,7 @@
         https://github.com/OSCARJFB
 
         MIT License
-        Copyright (c) 2023 Oscar Bergström
+        Copyright (c) 2024 Oscar Bergström
 */
 
 #ifndef TERMINAL_H
@@ -16,6 +16,6 @@
 #include <Windows.h>
 #endif
 
-void initTerm(void);
+void initConsole(void);
 
 #endif
