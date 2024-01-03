@@ -39,4 +39,22 @@ void initConsole(void)
 	SetConsoleMode(hInput ,dMode & ~(ENABLE_ECHO_INPUT | ENABLE_LINE_INPUT));
 }
 
+CHAR _kbhit(void)
+{
+	CHAR cAsciiKey = 0;
+	DWORD dEvents = 0;
+	INPUT_RECORD inputRecord;
+
+	if (PeekConsoleInput(hInput, &inputRecord, 1, &dEvents) && dEvents > 0)
+	{
+		ReadConsoleInput(hInput, &inputRecord, 1, &dEvents);
+		if (inputRecord.EventType == KEY_EVENT && inputRecord.Event.KeyEvent.bKeyDown)
+		{
+			cAsciiKey = inputRecord.Event.KeyEvent.uChar.AsciiChar;
+		}
+	}
+
+	return cAsciiKey;
+}
+
 #endif

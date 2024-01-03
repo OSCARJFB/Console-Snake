@@ -17,5 +17,6 @@
 #endif
 
 void initConsole(void);
+CHAR _kbhit(void);
 
 #endif

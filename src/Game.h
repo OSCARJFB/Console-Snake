@@ -3,7 +3,7 @@
         https://github.com/OSCARJFB
 
         MIT License
-        Copyright (c) 2023 Oscar Bergström
+        Copyright (c) 2024 Oscar Bergström
 */
 
 #ifndef GAME_H
@@ -17,9 +17,15 @@
 
 typedef struct Snake
 {
-    int x, y;
+    unsigned int x, y;
     struct Snake* next;
 } Snake; 
+
+typedef struct Board
+{
+    unsigned int length, width;
+    char** grid;
+} Board;
 
 void run(void);
 
