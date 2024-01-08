@@ -15,53 +15,48 @@ static inline void clearScreen(void)
 #endif
 }
 
+#define MAX 255 
 static void getBoardSize(Board* board)
 {
-	char buffer[3];
+	char buffer[MAX - 1];
+	const char* msg =
+		"################## BOARD SETUP ##################\n"
+		"The board size of the game must follow 3 rules,\n"
+		"The size can't be lesser than 10\n"
+		"The size can't be greater than 40\n"
+		"The size must be evenly divisible by 2\n"
+		"Please enter the board size: ";
 
-	puts("Enter the board size: ");
-	fgets(buffer, 3, stdin);
+	clearScreen();
+	printf(msg);
+	fgets(buffer, MAX - 1, stdin);
 
 #ifdef _WIN32
-	if (sscanf_s(buffer, "%d", &board->length) == EOF)
-	{
-		puts("Invalid input");
-	}
+	(void)sscanf_s(buffer, "%d", &board->size);
 #else
-	if (sscanf(buffer, "%d", &board->length) == EOF)
-	{
-		puts("Invalid input");
-	}
+	(void)sscanf(buffer, "%d", &board->size);
 #endif
-
-	board->width = board->length;
 }
 
 static void setBoardSize(Board* board)
 {
-	do
+	while (board->size % 2 != 0 || board->size < 10 || board->size > 40)
 	{
 		getBoardSize(board);
-		if (board->length % 2 != 0)
-		{
-			printf("Can't set the board size not evenly divisible by 2. %d / 2 = %f\n", 
-				board->length, (float)board->length / 2.0f);
-		}
-
-	} while (board->length % 2 != 0);
+	}
 }
 
 static void initBoard(Board* board)
 {
-	for (unsigned int i = 0; i < board->length; ++i)
+	for (unsigned int i = 0; i < board->size; ++i)
 	{
-		for (unsigned int j = 0; j < board->width; ++j)
+		for (unsigned int j = 0; j < board->size; ++j)
 		{
 			if (j == 0)
 			{
 				board->grid[i][j] = '#';
 			}
-			else if (j + 1 == board->width)
+			else if (j + 1 == board->size)
 			{
 				board->grid[i][j] = '#';
 			}
@@ -69,7 +64,7 @@ static void initBoard(Board* board)
 			{
 				board->grid[i][j] = '#';
 			}
-			else if(i + 1 == board->length)
+			else if(i + 1 == board->size)
 			{ 
 				board->grid[i][j] = '#';
 			}
@@ -84,16 +79,16 @@ static void initBoard(Board* board)
 static void allocateBoard(Board* board)
 {
 	setBoardSize(board);
-	board->grid = malloc(sizeof(char*) * board->length);
+	board->grid = malloc(sizeof(char*) * board->size);
 	if (board->grid == NULL)
 	{
 		perror("malloc");
 		exit(EXIT_FAILURE);
 	}
 
-	for (unsigned int i = 0; i < board->length; ++i)
+	for (unsigned int i = 0; i < board->size; ++i)
 	{
-		board->grid[i] = malloc(sizeof(char) * board->width);
+		board->grid[i] = malloc(sizeof(char) * board->size);
 		if (board->grid[i] == NULL)
 		{
 			perror("malloc");
@@ -105,7 +100,7 @@ static void allocateBoard(Board* board)
 
 void deallocateBoard(Board board)
 {
-	for (unsigned int i = 0; i < board.length; ++i)
+	for (unsigned int i = 0; i < board.size; ++i)
 	{
 		free(board.grid[i]);
 		board.grid[i] = NULL;
@@ -127,10 +122,9 @@ static bool framelock(void)
 	
 	end = time(NULL);
 	double diff = difftime(end, start);
-	if (diff > 5.0)
+	if (diff >= 1.0)
 	{
-		end = end = 0;
-		clearScreen();
+		start = end = 0;
 		return true;
 	}
 
@@ -167,15 +161,16 @@ static void addPartToSnake(Snake** snake)
 		if (tail->next == NULL)
 		{
 			tail->next = part;
+			break;
 		}
 	}
 }
 
 static void printBoard(Snake* snake, Board* board)
 {
-	for (unsigned int i = 0; i < board->length; ++i)
+	for (unsigned int i = 0; i < board->size; ++i)
 	{
-		for (unsigned int j = 0; j < board->width; ++j)
+		for (unsigned int j = 0; j < board->size; ++j)
 		{
 			printf("%c", board->grid[i][j]);
 		}
@@ -208,7 +203,7 @@ static unsigned int updateDirection(char ch)
 	return direction;
 }
 
-static void updateSnakePosition(Snake* snake, unsigned int direction)
+static void updateSnakeHead(Snake* snake, unsigned int direction)
 {
 	switch (direction)
 	{
@@ -227,20 +222,70 @@ static void updateSnakePosition(Snake* snake, unsigned int direction)
 	}
 }
 
+static void setOldSnakeHeadPosition(unsigned int* oldX, unsigned int* oldY, unsigned int direction)
+{
+	switch (direction)
+	{
+	case 1:
+		++*oldY;
+		break;
+	case 2:
+		++*oldX;
+		break;
+	case 3:
+		--*oldY;
+		break;
+	case 4:
+		--*oldX;
+		break;
+	}
+}
+
+static void updateSnake(Snake* snake, unsigned int direction)
+{
+	updateSnakeHead(snake, direction);
+	
+	if (snake->next == NULL)
+	{
+		return;
+	}
+
+	unsigned int oldX = snake->x, oldY = snake->y;
+	setOldSnakeHeadPosition(&oldX, &oldY, direction);
+
+	for (Snake* tail = snake->next; tail != NULL; tail = tail->next)
+	{
+		unsigned int tempX = tail->x;
+		unsigned int tempY = tail->y;
+
+		tail->x = oldX;
+		tail->y = oldY;
+
+		oldX = tempX;
+		oldY = tempY;
+	}
+}
+
 static void addSnakeToBoard(Snake* snake, Board* board)
 {
 	for (Snake* tail = snake; tail != NULL; tail = tail->next)
 	{
-		if (tail->y < board->length && tail->x < board->width)
+		if (tail->y < board->size && tail->x < board->size)
 		{
-			board->grid[tail->y][tail->x] = 'o';
+			board->grid[tail->y][tail->x] = 'O';
 		}
 	}
+}
+
+static bool isCollision(Snake* snake, Board* board)
+{
+
 }
 
 void run(void)
 {
 	const unsigned int ESC = 27;
+	unsigned int snakeSize = 0;
 	Snake* snake = NULL;
 	Board board;
 	
@@ -248,25 +293,28 @@ void run(void)
 	addPartToSnake(&snake);
 	initConsole();
 
-	snake->x = board.length / 2;
-	snake->y = board.width / 2;
+	// Snake base position.
+	snake->x = board.size / 2;
+	snake->y = board.size / 2;
 
 	while(1)
 	{
-		// READ INPUT
+		// READ INPUT.
 		unsigned int direction = updateDirection(_kbhit());
 
-		// FRAME LOCK
+		// FRAME LOCK.
 		if (!framelock())
 		{
 			continue;
 		}
 
-		// UPDATE
-		updateSnakePosition(snake, direction);
+		// UPDATE.
+		initBoard(&board);
+		updateSnake(snake, direction);
 		addSnakeToBoard(snake, &board);
 
-		// DRAW
+		// REFRESH AND DRAW.
+		clearScreen();
 		printBoard(snake, &board);
 	}
 	

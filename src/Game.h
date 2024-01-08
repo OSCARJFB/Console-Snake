@@ -1,9 +1,9 @@
 /*
-        Writen by: Oscar Bergström
-        https://github.com/OSCARJFB
+		Writen by: Oscar Bergström
+		https://github.com/OSCARJFB
 
-        MIT License
-        Copyright (c) 2024 Oscar Bergström
+		MIT License
+		Copyright (c) 2024 Oscar Bergström
 */
 
 #ifndef GAME_H
@@ -23,7 +23,7 @@ typedef struct Snake
 
 typedef struct Board
 {
-    unsigned int length, width;
+    unsigned int size;
     char** grid;
 } Board;
 
