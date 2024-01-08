@@ -185,16 +185,16 @@ static unsigned int updateDirection(char ch)
 	switch (ch)
 	{
 	case 'w':
-		direction = 1;
+		direction = up;
 		break;
 	case 'a':
-		direction = 2;
+		direction = left;
 		break;
 	case 's':
-		direction = 3;
+		direction = right;
 		break;
 	case 'd':
-		direction = 4;
+		direction = down;
 		break;
 	default:
 		break;
@@ -207,16 +207,16 @@ static void updateSnakeHead(Snake* snake, unsigned int direction)
 {
 	switch (direction)
 	{
-	case 1:
+	case up:
 		--snake->y;
 		break;
-	case 2:
+	case left:
 		--snake->x;
 		break;
-	case 3:
+	case right:
 		++snake->y;
 		break;
-	case 4:
+	case down:
 		++snake->x;
 		break;
 	}
@@ -226,16 +226,16 @@ static void setOldSnakeHeadPosition(unsigned int* oldX, unsigned int* oldY, unsi
 {
 	switch (direction)
 	{
-	case 1:
+	case up:
 		++*oldY;
 		break;
-	case 2:
+	case left:
 		++*oldX;
 		break;
-	case 3:
+	case right:
 		--*oldY;
 		break;
-	case 4:
+	case down:
 		--*oldX;
 		break;
 	}
@@ -277,9 +277,45 @@ static void addSnakeToBoard(Snake* snake, Board* board)
 	}
 }
 
+/*
 static bool isCollision(Snake* snake, Board* board)
 {
 
+}
+*/
+
+static void spawnFood(Food* food, Board* board)
+{
+	food->x = rand() % board->size + 1;
+	food->y = rand() % board->size + 1;
+}
+
+static inline bool eatFood(Food* food, Snake* snake)
+{
+	return (snake->x == food->x && snake->y == food->y);
+}
+
+static void foodController(Food* food, Snake* snake, Board* board)
+{
+	if (eatFood(food, snake))
+	{
+		spawnFood(food, board);
+	}
+}
+
+static void addFoodToBoard(Food* food, Board* board)
+{
+	for (unsigned int i = 0; i < board->size; ++i)
+	{
+		for (unsigned int j = 0; j < board->size; ++j)
+		{
+			if (food->y == i && food->x == j)
+			{
+				board->grid[i][j] = 'X'; // x is food.
+				break;
+			}
+		}
+	}
 }
 
 void run(void)
@@ -288,9 +324,11 @@ void run(void)
 	unsigned int snakeSize = 0;
 	Snake* snake = NULL;
 	Board board;
+	Food food;
 	
 	allocateBoard(&board);
 	addPartToSnake(&snake);
+	spawnFood(&food, &board);
 	initConsole();
 
 	// Snake base position.
@@ -310,8 +348,10 @@ void run(void)
 
 		// UPDATE.
 		initBoard(&board);
+		addFoodToBoard(&food, &board);
 		updateSnake(snake, direction);
 		addSnakeToBoard(snake, &board);
+		foodController(&food, snake, &board);
 
 		// REFRESH AND DRAW.
 		clearScreen();
