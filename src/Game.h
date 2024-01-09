@@ -15,11 +15,30 @@
 
 #include "Console.h"
 
+#define MIN_BOARD_SIZE 10
+#define MAX_BOARD_SIZE 40
+#define SNAKE 'O'
+#define FOOD 'X'
+#define BORDER '#'
+
+enum Direction
+{
+	up = 1,
+	left,
+	right,
+	down,
+};
+
 typedef struct Snake
 {
     unsigned int x, y;
     struct Snake* next;
 } Snake; 
+
+typedef struct Food
+{
+	unsigned int x, y;
+} Food;
 
 typedef struct Board
 {
