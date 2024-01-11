@@ -277,15 +277,6 @@ static void addSnakeToBoard(Snake* snake, Board* board)
 	}
 }
 
-static bool isCollision(Snake* snake, Board* board, unsigned int direction)
-{
-	switch (direction)
-	{
-	default:
-		break;
-	}
-}
-
 static void spawnFood(Food* food, Board* board)
 {
 	int slots = 0, spawnPosition = 0;
@@ -343,10 +334,42 @@ static void addFoodToBoard(Food* food, Board* board)
 	}
 }
 
+
+static bool isCollision(Snake* snake, Board* board)
+{
+	bool cFlag = false; 
+
+	// Check if the head has collided with the boarder!
+	if (snake->x == 0 || snake->x == board->size - 1)
+	{
+		cFlag = true;
+	}
+	else if (snake->y == 0 || snake->y == board->size - 1)
+	{
+		cFlag = true;
+	}
+
+	if (snake->next == NULL)
+	{
+		return cFlag;
+	}
+
+	// Else check if the head is collding with the body.
+	unsigned int x = snake->x, y = snake->y;
+	for (Snake* tail = snake->next; tail != NULL; tail = tail->next)
+	{
+		if (tail->x == x && tail->y == y)
+		{
+			cFlag = true;
+		}
+	}
+
+	return cFlag;
+}
+
 void run(void)
 {
 	const unsigned int ESC = 27;
-	unsigned int snakeSize = 0;
 	Snake* snake = NULL;
 	Board board;
 	Food food;
@@ -360,7 +383,7 @@ void run(void)
 	snake->x = board.size / 2;
 	snake->y = board.size / 2;
 
-	while(1)
+	while(!isCollision(snake, &board))
 	{
 		// READ INPUT.
 		unsigned int direction = updateDirection(_kbhit());
