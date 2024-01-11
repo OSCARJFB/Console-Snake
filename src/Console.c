@@ -16,7 +16,9 @@ static HANDLE hInput = NULL;
 void restoreConsole(void)
 {
 	SetConsoleMode(hInput, dMode);
+#ifdef _DEBUG
 	printf("Terminal was restored successfully");
+#endif
 }
 
 void initConsole(void)
