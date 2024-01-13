@@ -185,16 +185,16 @@ static unsigned int updateDirection(char ch)
 	switch (ch)
 	{
 	case 'w':
-		direction = up;
+		direction = direction != down ? up : down;
 		break;
 	case 'a':
-		direction = left;
+		direction = direction != right ? left : right;
 		break;
 	case 's':
-		direction = right;
+		direction = direction != up ? down : up;
 		break;
 	case 'd':
-		direction = down;
+		direction = direction != left ? right : left;
 		break;
 	default:
 		break;
@@ -213,10 +213,10 @@ static void updateSnakeHead(Snake* snake, unsigned int direction)
 	case left:
 		--snake->x;
 		break;
-	case right:
+	case down:
 		++snake->y;
 		break;
-	case down:
+	case right:
 		++snake->x;
 		break;
 	}
@@ -232,10 +232,10 @@ static void setOldSnakeHeadPosition(unsigned int* oldX, unsigned int* oldY, unsi
 	case left:
 		++*oldX;
 		break;
-	case right:
+	case down:
 		--*oldY;
 		break;
-	case down:
+	case right:
 		--*oldX;
 		break;
 	}

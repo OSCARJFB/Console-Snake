@@ -25,8 +25,8 @@ enum Direction
 {
 	up = 1,
 	left,
-	right,
 	down,
+	right,
 };
 
 typedef struct Snake
