@@ -310,13 +310,16 @@ static inline bool eatFood(Food* food, Snake* snake)
 	return (snake->x == food->x && snake->y == food->y);
 }
 
-static void foodController(Food* food, Snake** snake, Board* board)
+static bool foodController(Food* food, Snake** snake, Board* board)
 {
 	if (eatFood(food, *snake))
 	{
 		spawnFood(food, board);
 		addPartToSnake(snake);
+		return true;
 	}
+
+	return false;
 }
 
 static void addFoodToBoard(Food* food, Board* board)
@@ -367,8 +370,22 @@ static bool isCollision(Snake* snake, Board* board)
 	return cFlag;
 }
 
+static void displayScore(bool* isScore)
+{
+	static unsigned int score = 0;
+	
+	if (*isScore)
+	{
+		++score;
+		*isScore = false;
+	}
+
+	printf("Score: %d", score);
+}
+
 void run(void)
 {
+	bool isScore = false;
 	const unsigned int ESC = 27;
 	Snake* snake = NULL;
 	Board board;
@@ -399,11 +416,12 @@ void run(void)
 		addFoodToBoard(&food, &board);
 		updateSnake(snake, direction);
 		addSnakeToBoard(snake, &board);
-		foodController(&food, &snake, &board);
+		isScore = foodController(&food, &snake, &board);
 
 		// REFRESH AND DRAW.
 		clearScreen();
 		printBoard(snake, &board);
+		displayScore(&isScore);
 	}
 	
 	deallocateBoard(board);
