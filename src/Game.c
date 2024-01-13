@@ -185,16 +185,16 @@ static unsigned int updateDirection(char ch)
 	switch (ch)
 	{
 	case 'w':
-		direction = up;
+		direction = direction != down ? up : down;
 		break;
 	case 'a':
-		direction = left;
+		direction = direction != right ? left : right;
 		break;
 	case 's':
-		direction = right;
+		direction = direction != up ? down : up;
 		break;
 	case 'd':
-		direction = down;
+		direction = direction != left ? right : left;
 		break;
 	default:
 		break;
@@ -213,10 +213,10 @@ static void updateSnakeHead(Snake* snake, unsigned int direction)
 	case left:
 		--snake->x;
 		break;
-	case right:
+	case down:
 		++snake->y;
 		break;
-	case down:
+	case right:
 		++snake->x;
 		break;
 	}
@@ -232,10 +232,10 @@ static void setOldSnakeHeadPosition(unsigned int* oldX, unsigned int* oldY, unsi
 	case left:
 		++*oldX;
 		break;
-	case right:
+	case down:
 		--*oldY;
 		break;
-	case down:
+	case right:
 		--*oldX;
 		break;
 	}
@@ -310,13 +310,16 @@ static inline bool eatFood(Food* food, Snake* snake)
 	return (snake->x == food->x && snake->y == food->y);
 }
 
-static void foodController(Food* food, Snake** snake, Board* board)
+static bool foodController(Food* food, Snake** snake, Board* board)
 {
 	if (eatFood(food, *snake))
 	{
 		spawnFood(food, board);
 		addPartToSnake(snake);
+		return true;
 	}
+
+	return false;
 }
 
 static void addFoodToBoard(Food* food, Board* board)
@@ -367,8 +370,22 @@ static bool isCollision(Snake* snake, Board* board)
 	return cFlag;
 }
 
+static void displayScore(bool* isScore)
+{
+	static unsigned int score = 0;
+	
+	if (*isScore)
+	{
+		++score;
+		*isScore = false;
+	}
+
+	printf("Score: %d", score);
+}
+
 void run(void)
 {
+	bool isScore = false;
 	const unsigned int ESC = 27;
 	Snake* snake = NULL;
 	Board board;
@@ -399,11 +416,12 @@ void run(void)
 		addFoodToBoard(&food, &board);
 		updateSnake(snake, direction);
 		addSnakeToBoard(snake, &board);
-		foodController(&food, &snake, &board);
+		isScore = foodController(&food, &snake, &board);
 
 		// REFRESH AND DRAW.
 		clearScreen();
 		printBoard(snake, &board);
+		displayScore(&isScore);
 	}
 	
 	deallocateBoard(board);
