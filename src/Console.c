@@ -41,6 +41,7 @@ void initConsole(void)
 	SetConsoleMode(hInput ,dMode & ~(ENABLE_ECHO_INPUT | ENABLE_LINE_INPUT));
 }
 
+
 CHAR _kbhit(void)
 {
 	CHAR cAsciiKey = 0;
@@ -59,4 +60,67 @@ CHAR _kbhit(void)
 	return cAsciiKey;
 }
 
+#elif __linux__
+
+static struct termios original_term, raw_term;
+
+void restoreConsole(void)
+{
+	tcsetattr(STDIN_FILENO, TCSAFLUSH, &original_term);
+#ifdef _DEBUG
+	printf("Terminal was restored successfully");
 #endif
+}
+
+void initConsole(void)
+{
+	if(tcgetattr(STDIN_FILENO, &original_term) == -1)
+	{
+		perror("tcgetattr");
+		exit(-1);
+	}
+
+	raw_term = original_term;
+	raw_term.c_lflag &= ~(ICANON | ECHO);
+
+	if(tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw_term) == -1)
+	{
+		perror("tcsetattr");
+		exit(-1);
+	}
+
+	atexit(restoreConsole);
+}
+		
+char _kbhit(void)
+{
+	static char byte = 0;
+	/*
+	read(STDIN_FILENO, &byte, sizeof(char));
+	*/
+	byte = getchar();
+	return byte;		
+}
+
+#endif
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

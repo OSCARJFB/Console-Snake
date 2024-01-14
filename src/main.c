@@ -6,7 +6,7 @@
 		Copyright (c) 2024 Oscar Bergström
 */
 
-#include "game.h"
+#include "Game.h"
 
 int main(void)
 {

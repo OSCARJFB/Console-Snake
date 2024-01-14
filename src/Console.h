@@ -13,15 +13,28 @@
 #include <stdio.h>
 
 #ifdef _WIN32
+
 #include <Windows.h>
+
+#elif __linux__
+
+#include <unistd.h>
+#include <termios.h>
+#include <string.h>
+
 #endif
 
-void initConsole(void);
 
 #ifdef _WINDOWS_
+
+void initConsole(void);
 CHAR _kbhit(void);
+
 #elif __linux__
+
+void initConsole(void);
 char _kbhit(void);
+
 #endif 
 
 #endif

@@ -12,6 +12,8 @@ static inline void clearScreen(void)
 {
 #ifdef _WIN32
 	system("cls");
+#elif __linux__
+	system("clear");
 #endif
 }
 
@@ -28,13 +30,13 @@ static void getBoardSize(Board* board)
 		"Please enter the board size: ";
 
 	clearScreen();
-	printf(msg);
+	printf("%s", msg);
 	fgets(buffer, MAX - 1, stdin);
 
 #ifdef _WIN32
-	(void)sscanf_s(buffer, "%d", &board->size);
+	(void)sscanf_s(buffer, "%u", &board->size);
 #else
-	(void)sscanf(buffer, "%d", &board->size);
+	(void)sscanf(buffer, "%u", &board->size);
 #endif
 }
 
@@ -166,7 +168,7 @@ static void addPartToSnake(Snake** snake)
 	}
 }
 
-static void printBoard(Snake* snake, Board* board)
+static void printBoard(Board* board)
 {
 	for (unsigned int i = 0; i < board->size; ++i)
 	{
@@ -380,13 +382,12 @@ static void displayScore(bool* isScore)
 		*isScore = false;
 	}
 
-	printf("Score: %d", score);
+	printf("Score: %u", score);
 }
 
 void run(void)
 {
 	bool isScore = false;
-	const unsigned int ESC = 27;
 	Snake* snake = NULL;
 	Board board;
 	Food food;
@@ -420,7 +421,7 @@ void run(void)
 
 		// REFRESH AND DRAW.
 		clearScreen();
-		printBoard(snake, &board);
+		printBoard(&board);
 		displayScore(&isScore);
 	}
 	
