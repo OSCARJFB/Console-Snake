@@ -17,6 +17,11 @@
 #endif
 
 void initConsole(void);
+
+#ifdef _WINDOWS_
 CHAR _kbhit(void);
+#elif __linux__
+char _kbhit(void);
+#endif 
 
 #endif
