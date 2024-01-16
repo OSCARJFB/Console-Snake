@@ -404,7 +404,7 @@ void run(void)
 	while(!isCollision(snake, &board))
 	{
 		// READ INPUT.
-		unsigned int direction = updateDirection(_kbhit());
+		unsigned int direction = updateDirection(kbhit());
 
 		// FRAME LOCK.
 		if (!framelock())

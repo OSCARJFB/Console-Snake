@@ -1,9 +1,9 @@
 /*
-		Writen by: Oscar Bergström
-		https://github.com/OSCARJFB
+   	Writen by: Oscar Bergström
+	https://github.com/OSCARJFB
 
-		MIT License
-		Copyright (c) 2024 Oscar Bergström
+	MIT License
+	Copyright (c) 2024 Oscar Bergström
 */
 
 #include "Console.h"
@@ -42,7 +42,7 @@ void initConsole(void)
 }
 
 
-CHAR _kbhit(void)
+CHAR kbhit(void)
 {
 	CHAR cAsciiKey = 0;
 	DWORD dEvents = 0;
@@ -91,15 +91,18 @@ void initConsole(void)
 
 	atexit(restoreConsole);
 }
-		
-char _kbhit(void)
+
+char kbhit(void)
 {
-	static char byte = 0;
-	/*
-	read(STDIN_FILENO, &byte, sizeof(char));
-	*/
-	byte = getchar();
-	return byte;		
+	long bytes = 0;
+	char cr = 0;
+	ioctl(STDIN_FILENO, FIONREAD, &bytes);
+	if (bytes > 0)
+	{
+		read(STDIN_FILENO, &cr, sizeof(char));
+	}
+	fflush(stdout);
+	return cr;
 }
 
 #endif

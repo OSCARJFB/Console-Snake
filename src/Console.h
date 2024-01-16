@@ -20,20 +20,19 @@
 
 #include <unistd.h>
 #include <termios.h>
-#include <string.h>
-
+#include <sys/ioctl.h>
 #endif
 
 
 #ifdef _WINDOWS_
 
 void initConsole(void);
-CHAR _kbhit(void);
+CHAR kbhit(void);
 
 #elif __linux__
 
 void initConsole(void);
-char _kbhit(void);
+char kbhit(void);
 
 #endif 
 
