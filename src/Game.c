@@ -17,7 +17,6 @@ static inline void clearScreen(void)
 #endif
 }
 
-#define MAX 255 
 static void getBoardSize(Board* board)
 {
 	char buffer[MAX - 1];
@@ -391,7 +390,7 @@ void run(void)
 	Snake* snake = NULL;
 	Board board;
 	Food food;
-	
+	const auto* a = "char";
 	allocateBoard(&board);
 	addPartToSnake(&snake);
 	spawnFood(&food, &board);

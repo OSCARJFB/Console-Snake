@@ -20,6 +20,7 @@
 #define SNAKE 'O'
 #define FOOD 'X'
 #define BORDER '#'
+#define MAX 255 
 
 enum Direction
 {
