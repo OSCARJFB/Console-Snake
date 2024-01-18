@@ -8,15 +8,6 @@
 
 #include "Game.h"
 
-static inline void clearScreen(void)
-{
-#ifdef _WIN32
-	system("cls");
-#elif __linux__
-	system("clear");
-#endif
-}
-
 static void getBoardSize(Board* board)
 {
 	char buffer[MAX - 1];
@@ -390,7 +381,7 @@ void run(void)
 	Snake* snake = NULL;
 	Board board;
 	Food food;
-	const auto* a = "char";
+
 	allocateBoard(&board);
 	addPartToSnake(&snake);
 	spawnFood(&food, &board);

@@ -1,6 +1,6 @@
 # Console-Snake
 
-This is a simple snake game run as a console application.
+This is a simple snake game that is run as a console application.
 The code may be compiled on both Windows and Linux and should work without any issues.
 
 ## Windows

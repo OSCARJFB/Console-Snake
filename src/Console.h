@@ -23,17 +23,8 @@
 #include <sys/ioctl.h>
 #endif
 
-
-#ifdef _WINDOWS_
-
-void initConsole(void);
-CHAR kbhit(void);
-
-#elif __linux__
-
+void clearScreen(void);
 void initConsole(void);
 char kbhit(void);
-
-#endif 
 
 #endif

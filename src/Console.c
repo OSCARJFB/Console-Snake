@@ -41,8 +41,7 @@ void initConsole(void)
 	SetConsoleMode(hInput ,dMode & ~(ENABLE_ECHO_INPUT | ENABLE_LINE_INPUT));
 }
 
-
-CHAR kbhit(void)
+char kbhit(void)
 {
 	CHAR cAsciiKey = 0;
 	DWORD dEvents = 0;
@@ -57,7 +56,12 @@ CHAR kbhit(void)
 		}
 	}
 
-	return cAsciiKey;
+	return (char)cAsciiKey;
+}
+
+void clearScreen(void)
+{
+	system("cls");
 }
 
 #elif __linux__
@@ -103,6 +107,11 @@ char kbhit(void)
 	}
 	fflush(stdout);
 	return cr;
+}
+
+inline void clearScreen(void)
+{
+	system("clear");
 }
 
 #endif
