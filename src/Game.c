@@ -382,6 +382,7 @@ void run(void)
 	Board board;
 	Food food;
 
+	srand((unsigned int)time(NULL));
 	allocateBoard(&board);
 	addPartToSnake(&snake);
 	spawnFood(&food, &board);
