@@ -40,9 +40,9 @@ static void setBoardSize(Board* board)
 
 static void initBoard(Board* board)
 {
-	for (unsigned int i = 0; i < board->size; ++i)
+	for (int i = 0; i < board->size; ++i)
 	{
-		for (unsigned int j = 0; j < board->size; ++j)
+		for (int j = 0; j < board->size; ++j)
 		{
 			if (j == 0)
 			{
@@ -78,7 +78,7 @@ static void allocateBoard(Board* board)
 		exit(EXIT_FAILURE);
 	}
 
-	for (unsigned int i = 0; i < board->size; ++i)
+	for (int i = 0; i < board->size; ++i)
 	{
 		board->grid[i] = malloc(sizeof(char) * board->size);
 		if (board->grid[i] == NULL)
@@ -92,7 +92,7 @@ static void allocateBoard(Board* board)
 
 void deallocateBoard(Board board)
 {
-	for (unsigned int i = 0; i < board.size; ++i)
+	for (int i = 0; i < board.size; ++i)
 	{
 		free(board.grid[i]);
 		board.grid[i] = NULL;
@@ -160,9 +160,9 @@ static void addPartToSnake(Snake** snake)
 
 static void printBoard(Board* board)
 {
-	for (unsigned int i = 0; i < board->size; ++i)
+	for (int i = 0; i < board->size; ++i)
 	{
-		for (unsigned int j = 0; j < board->size; ++j)
+		for (int j = 0; j < board->size; ++j)
 		{
 			printf("%c", board->grid[i][j]);
 		}
@@ -170,9 +170,9 @@ static void printBoard(Board* board)
 	}
 }
 
-static unsigned int updateDirection(char ch)
+static int updateDirection(char ch)
 {
-	static unsigned int direction = 0;
+	static int direction = 0;
 
 	switch (ch)
 	{
@@ -195,7 +195,7 @@ static unsigned int updateDirection(char ch)
 	return direction;
 }
 
-static void updateSnakeHead(Snake* snake, unsigned int direction)
+static void updateSnakeHead(Snake* snake, int direction)
 {
 	switch (direction)
 	{
@@ -214,7 +214,7 @@ static void updateSnakeHead(Snake* snake, unsigned int direction)
 	}
 }
 
-static void setOldSnakeHeadPosition(unsigned int* oldX, unsigned int* oldY, unsigned int direction)
+static void setOldSnakeHeadPosition(int* oldX, int* oldY, int direction)
 {
 	switch (direction)
 	{
@@ -233,7 +233,7 @@ static void setOldSnakeHeadPosition(unsigned int* oldX, unsigned int* oldY, unsi
 	}
 }
 
-static void updateSnake(Snake* snake, unsigned int direction)
+static void updateSnake(Snake* snake, int direction)
 {
 	updateSnakeHead(snake, direction);
 	
@@ -242,13 +242,13 @@ static void updateSnake(Snake* snake, unsigned int direction)
 		return;
 	}
 
-	unsigned int oldX = snake->x, oldY = snake->y;
+	int oldX = snake->x, oldY = snake->y;
 	setOldSnakeHeadPosition(&oldX, &oldY, direction);
 
 	for (Snake* tail = snake->next; tail != NULL; tail = tail->next)
 	{
-		unsigned int tempX = tail->x;
-		unsigned int tempY = tail->y;
+		int tempX = tail->x;
+		int tempY = tail->y;
 
 		tail->x = oldX;
 		tail->y = oldY;
@@ -275,9 +275,9 @@ static void spawnFood(Food* food, Board* board)
 	int x[MAX_BOARD_SIZE * MAX_BOARD_SIZE], y[MAX_BOARD_SIZE * MAX_BOARD_SIZE];
 	
 	// Find all free slots, where we can place food.
-	for (unsigned int i = 0; i < board->size; ++i)
+	for (int i = 0; i < board->size; ++i)
 	{
-		for (unsigned int j = 0; j < board->size; ++j)
+		for (int j = 0; j < board->size; ++j)
 		{
 			if (board->grid[i][j] != BORDER && board->grid[i][j] != SNAKE)
 			{
@@ -316,9 +316,9 @@ static bool foodController(Food* food, Snake** snake, Board* board)
 
 static void addFoodToBoard(Food* food, Board* board)
 {
-	for (unsigned int i = 0; i < board->size; ++i)
+	for (int i = 0; i < board->size; ++i)
 	{
-		for (unsigned int j = 0; j < board->size; ++j)
+		for (int j = 0; j < board->size; ++j)
 		{
 			if (food->y == i && food->x == j)
 			{
@@ -350,7 +350,7 @@ static bool isCollision(Snake* snake, Board* board)
 	}
 
 	// Else check if the head is collding with the body.
-	unsigned int x = snake->x, y = snake->y;
+	int x = snake->x, y = snake->y;
 	for (Snake* tail = snake->next; tail != NULL; tail = tail->next)
 	{
 		if (tail->x == x && tail->y == y)
@@ -364,7 +364,7 @@ static bool isCollision(Snake* snake, Board* board)
 
 static void displayScore(bool* isScore)
 {
-	static unsigned int score = 0;
+	static int score = 0;
 	
 	if (*isScore)
 	{
@@ -395,7 +395,7 @@ void run(void)
 	while(!isCollision(snake, &board))
 	{
 		// READ INPUT.
-		unsigned int direction = updateDirection(kbhit());
+		int direction = updateDirection(kbhit());
 
 		// FRAME LOCK.
 		if (!framelock())

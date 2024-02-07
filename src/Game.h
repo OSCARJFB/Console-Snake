@@ -32,18 +32,18 @@ enum Direction
 
 typedef struct Snake
 {
-    unsigned int x, y;
+    int x, y;
     struct Snake* next;
 } Snake; 
 
 typedef struct Food
 {
-	unsigned int x, y;
+	int x, y;
 } Food;
 
 typedef struct Board
 {
-    unsigned int size;
+    int size;
     char** grid;
 } Board;
 
